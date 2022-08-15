@@ -1,0 +1,51 @@
+
+```{r}
+library(psych)
+
+data4 <- read.csv('data4.csv')
+pairs.panels(data4[,2:7], 
+             method = "pearson", # correlation method
+             hist.col = "#00AFBB",
+             lm = TRUE,
+             density = TRUE,  
+             ellipses = TRUE 
+             )
+```
+
+Model selection
+
+Actually, after the first try, fit a model using all attributes, we can obviously see that there is no significant predictors for the annual salary (R-squared and adjusted R-squared is small and p-value is high). Therefore, we can try doing model selection, backwards elimination for example but it's not worth the time to try others (BIC or AIC).
+
+
+```{r}
+
+all_attributes <- lm(annual_salary ~ longitude + latitude + age + balance + gender_F, data = data4)
+summary(all_attributes)
+# anova(annual_salary_cal)
+
+# 4 attributes
+
+long_lat_age_gender <- lm(annual_salary ~ longitude + latitude + age + gender_F, data = data4)
+summary(long_lat_age_gender)
+
+long_lat_age_balance <- lm(annual_salary ~ longitude + latitude + age + balance, data = data4)
+summary(long_lat_age_balance)
+
+long_lat_balance_gender <- lm(annual_salary ~ longitude + latitude + age, data = data4)
+summary(long_lat_balance_gender)
+
+# 2 attributes
+
+balance_gender <- lm(annual_salary ~ balance + gender_F, data = data4)
+summary(balance_gender)
+
+balance_age <- lm(annual_salary ~ balance + age, data = data4)
+summary(balance_age)
+
+# 1 attribute
+
+balance <- lm(annual_salary ~ balance, data = data4)
+summary(balance)
+
+```
+
