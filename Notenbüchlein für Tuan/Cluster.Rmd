@@ -1,0 +1,74 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+# Packages and Data
+
+```{r}
+install.packages('factoextra'); install.packages('cluster')
+install.packages('ape'); install.packages('ggdendro')
+library(ape); library(ggdendro); library(factoextra); library(cluster)
+```
+
+```{r}
+set.seed(42)
+mnist_test = read.csv('mnist_test.csv')
+mini_data = mnist_test[sample(100), 2:785]
+
+```
+
+# Scale Data and Calculate the distances
+
+```{r}
+scaled_data = mini_data/255 + 1e-3
+distances = dist(scaled_data)
+```
+
+# Clusterability
+
+```{r}
+clusterability = get_clust_tendency(mini_data, n = 90)
+print(clusterability$hopkins)
+clusterability$plot
+```
+
+# Gap Statistics and Elbow
+
+```{r}
+fviz_nbclust(scaled_data, kmeans, method = 'gap_stat', k.max = 12, nboot = 90) +
+  labs(subtitle = 'Gap Stats method')
+```
+
+```{r}
+my_kmeans = kmeans(scaled_data, centers = 5, nstart = 100)
+row.names(scaled_data) = make.names(mnist_test$label[1:100], unique = T)
+fviz_cluster(my_kmeans, scaled_data, stand = F)
+```
+
+```{r}
+fviz_nbclust(scaled_data, kmeans, method = 'wss') + labs(subtitle = 'Elbow method')
+```
+
+# Performance Validation
+
+```{r}
+silhouette = silhouette(my_kmeans$cluster, distances)
+fviz_silhouette(silhouette)
+```
+
+```{r}
+
+```
+
+# A fancy dendrogram
+
+```{r}
+hc = hclust(distances, method = 'ward.D2')
+nclust = cutree(hc, 7)
+colours = c('red', 'green', 'yellow', 'blue', 'black', 'pink', 'orange')
+plot(as.phylo(hc), type = 'fan', tip.color = colours[nclust], 
+     label.offset = 1, cex = 0.5)
+```
