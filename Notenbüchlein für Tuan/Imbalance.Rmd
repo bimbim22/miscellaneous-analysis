@@ -1,0 +1,145 @@
+---
+---
+---
+
+# Packages and Data
+
+```{r}
+install.packages('remotes')
+install.packages('caret')
+install.packages('kernlab')
+install.packages('C50')
+```
+
+```{r}
+library(caret)
+library(pROC)
+library(kernlab)
+```
+
+```{r}
+set.seed(42)
+
+train_set = twoClassSim(n = 600, intercept = -15)
+test_set = twoClassSim(n = 400, intercept = -15)
+
+table(test_set$Class)
+```
+
+# Training Control
+
+```{r}
+## For accuracy, Kappa, the area under the ROC curve,
+## sensitivity and specificity:
+fiveStats = function(...){
+  c(twoClassSummary(...), defaultSummary(...)) 
+}
+
+training_control_with_probs = trainControl(method = "cv", 
+                                           classProbs = T,
+                                           summaryFunction = fiveStats, 
+                                           verboseIter = F)
+
+## Everything but the area under the ROC curve:
+fourStats = function (data, lev = levels(data$obs), model = NULL)
+{
+accKapp = postResample(data[, "pred"], data[, "obs"])
+out = c(accKapp,
+sensitivity(data[, "pred"], data[, "obs"], lev[1]),
+specificity(data[, "pred"], data[, "obs"], lev[2]))
+names(out)[3:4] = c("Sens", "Spec")
+out
+}
+
+
+training_control_without_probs = training_control_with_probs
+training_control_without_probs$classProbs = F
+training_control_without_probs$summaryFunction = fourStats
+```
+
+# Random Forest
+
+```{r}
+set.seed(42)
+
+RF_model = train(Class ~ ., data = train_set, method = "rf", 
+                 trControl = training_control_with_probs,
+                 ntree = 1500, tuneLength = 5, metric = "ROC", verbose = F)
+```
+
+```{r}
+test_results = data.frame(Class = test_set$Class)
+
+test_results$RF = predict(RF_model, newdata = test_set,
+                          type = "prob")[,1]
+
+RF_ROC = roc(test_results$Class, test_results$RF,
+             levels = rev(levels(test_results$Class)))
+```
+
+```{r}
+plot(RF_ROC, legacy.axes = TRUE)
+```
+
+```{r}
+RF_threshold = coords(RF_ROC, x = "best", 
+                      best.method = "closest.topleft")
+RF_threshold
+```
+
+# Logistic Regression
+
+```{r}
+set.seed(42)
+
+LR_model = train(Class ~ ., data = train_set, 
+                 method = "glm", metric = "ROC",
+                 trControl = training_control_with_probs)
+```
+
+```{r}
+test_results$LogReg = predict(LR_model, newdata = test_set,
+                              type = "prob")[,1]
+
+LR_ROC <- roc(test_results$Class, test_results$LogReg,
+              levels = rev(levels(test_results$Class)))
+```
+
+```{r}
+plot(LR_ROC, legacy.axes = T)
+```
+
+```{r}
+LR_threshold = coords(LR_ROC, x = "best", 
+                      best.method = "closest.topleft")
+LR_threshold
+```
+
+# Sensitive Cost Learning
+
+## C5 Cost
+
+```{r}
+C5_matrix = matrix(c(0, 1, 15, 0), ncol = 2)
+rownames(C5_matrix) = levels(train_set$Class)
+colnames(C5_matrix) = levels(train_set$Class)
+C5_matrix
+```
+
+```{r}
+library(C50)
+set.seed(42)
+C5Cost_model = train(x = train_set[, 1:15], y = train_set$Class, 
+                     method = "C5.0", metric = "Kappa", 
+                     cost = C5_matrix, 
+                     trControl = training_control_without_probs,
+                     verbose = F)
+```
+
+```{r}
+test_pred = predict(C5Cost_model,
+                    newdata = test_set,
+                    type = "raw")
+
+confusionMatrix(test_pred, test_set$Class)
+```
