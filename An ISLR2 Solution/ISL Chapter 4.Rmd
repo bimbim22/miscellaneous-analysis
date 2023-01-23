@@ -1,0 +1,822 @@
+---
+title: "Chapter 4 Classification"
+output: pdf_document
+date: "2022-12-09"
+---
+
+# Exercise 1
+
+$$ \left( X\right) =\dfrac{e^{\beta _{0}+\beta _{1}x}}{1+e^{\beta _{0}+\beta _{1}x}}\\ 1-p\left( x\right) =1-\dfrac{e^{\beta _{0}+\beta _{1}x}}{1+e^{\beta _{0}+\beta _{1}x}}=\dfrac{1}{1+e^{\beta _{0}+\beta _{1}x}}\\ \dfrac{p\left( x\right) }{1-p\left( x\right) }=e^{\beta _{0}+\beta _{1}x} $$
+
+# Exercise 2
+
+$$ p _{k}\left( x\right) =\dfrac{\pi _{k}\dfrac{1}{\sqrt{2\pi }\sigma }\exp \left( -\dfrac{1}{2\sigma ^{2}}\left( x-\mu _{k}\right) ^{2}\right) }{\sum ^{k}_{l=1}\pi _{l}\dfrac{1}{\sqrt{2\pi }\sigma }\exp \left( -\dfrac{1}{2\sigma ^{2}}\left( x-\mu _{l}\right) ^{2}\right) }\hspace{50pt}\left( 1\right) $$
+
+Taking the log of (1) from both sides
+
+$$ \log \left( p\left( x\right) \right) =\log \left( \pi _{k}\exp \left( -\dfrac{1}{2\sigma ^{2}}\left( x-\mu _{k}\right) ^{2}\right) \right) - \log \left( \sum ^{k}_{l=1}\pi _{l}\dfrac{1}{\sqrt{2\pi }\sigma }\exp \left( -\dfrac{1}{2\sigma ^{2}}\left( x-\mu _{l}\right) ^{2}\right) \right) \hspace{50pt}\left(2\right) $$Since the second term in (2) is independent of k, finding k for which (1) is largest is equivalent to find k for which (3) is largest
+
+$$\delta _{k}\left( x\right) =\log \left( \pi _{k}\right) +\log ( \exp \left( -\dfrac{1}{2\sigma ^{2}}\left( x-\mu _{k}\right) ^{2}\right) \hspace{50pt}\left(3\right) $$
+
+\\begin{aligned}\\delta \_{k}\\left( x\\right) =\\log \\left( \\pi \_{k}\\right) + -\\dfrac{1}{2\\sigma \^{2}}\\left( x-\\mu \_{k}\\right) \^{2} \\end{aligned}
+
+\\begin{aligned}\\delta \_{k}\\left( x\\right) =\\log \\left( \\pi \_{k}\\right) -\\dfrac{1}{2\\sigma \^{2}}x\^{2}+\\dfrac{1}{\\sigma \^{2}}x\\mu \_{k}-\\dfrac{1}{2\\sigma \^{2}}\\mu k\^{2} \\left(4\\right) \\end{aligned}
+
+Again, as the second term is independent of k, finding k for which (4) is largest is equivalent to find k for which (5) is largest
+
+\\begin{aligned}\\delta \_{k}\\left( x\\right) =x\\dfrac{\\mu \_{k}}{\\sigma \^{2}}-\\dfrac{\\mu k\^{2}}{2\\sigma \^{2}}+\\log \\left( \\pi \_{k}\\right) \\left(5\\right) \\end{aligned}
+
+# Exercise 3
+
+\\begin{aligned}p \_{k}\\left( x\\right) =\\dfrac{\\pi \_{k}\\dfrac{1}{\\sqrt{2\\pi }\\sigma \_{k}}\\exp \\left( -\\dfrac{1}{2\\sigma \_{k}\^{2}}\\left( x-\\mu \_{k}\\right) \^{2}\\right) }{\\sum \^{k}\_{l=1}\\pi \_{l}\\dfrac{1}{\\sqrt{2\\pi }\\sigma \_{l}}\\exp \\left( -\\dfrac{1}{2\\sigma \_{l}\^{2}}\\left( x-\\mu \_{l}\\right) \^{2}\\right) }\\left( 1\\right) \\end{aligned}
+
+Taking the log of (1) from both sides
+
+\\begin{aligned}\\log \\left( p\\left( x\\right) \\right) =\\log \\left( \\pi \_{k}\\dfrac{1}{\\sqrt{2\\pi }\\sigma \_{k}}\\exp \\left( -\\dfrac{1}{2\\sigma \_{k}\^{2}}\\left( x-\\mu \_{k}\\right) \^{2}\\right) \\right) - \\log \\left( \\sum \^{K}\_{l=1}\\pi \_{l}\\dfrac{1}{\\sqrt{2\\pi }\\sigma \_{l}}\\exp \\left( -\\dfrac{1}{2\\sigma \_{l}\^{2}}\\left( x-\\mu \_{l}\\right) \^{2}\\right) \\right) \\left(2\\right) \\end{aligned}
+
+Since the second term in (2) is independent of k, finding k for which (1) is largest is equivalent to find k for which (3) is largest
+
+\\begin{aligned}\\delta \_{k}\\left( x\\right) =\\log \\left( \\pi \_{k}\\right) +\\log \\left( \\dfrac{1}{\\sigma \_{k}}\\right) +\\log \\left( \\exp \\left( -\\dfrac{1}{2\\sigma \_{k}\^{2}}\\left( x-\\mu \_{k}\\right) \^{2}\\right) \\right) \\left(3\\right) \\end{aligned}
+
+\\begin{aligned}\\delta\_{k}\\left( x\\right) =\\log \\left( \\pi \_{k}\\right) +\\log \\left( \\sigma \_{k}-1\\right) + -\\dfrac{1}{2\\sigma \_{k}\^{2}}\\left( x-\\mu \_{k}\\right) \^{2}\\end{aligned}
+
+\\begin{aligned}\\delta \_{k}\\left( x\\right) =-\\dfrac{1}{2\\sigma k\^{2}}x\^{2}+\\dfrac{\\mu \_{k}}{\\sigma \_{k}\^{2}}x+\\mu \_{k}\^{2}+\\log \\left( \\pi \_{k}\\right) -\\log \\left( \\sigma \_{k}\\right) \\end{aligned}
+
+Here in this case, we can see that the Bayes classifier is in fact quadratic.
+
+# Exercise 4
+
+## a
+
+```{r}
+x = c(0, 1)
+y = c(0, 0)
+plot(x, y, type = 'l')
+xx = c(0, 0.05, 0.95, 1)
+yy = c(0, 0, 0, 0)
+points(xx, yy)
+```
+
+When p = 1, the hypercube of X is a line. It's clear that if X is in the range [0.05, 0.95], we will use observations in the range [X - 0.05, X + 0.05] and the fraction (the length of the line segment) of the available observations we will use is
+
+\\begin{aligned}\\left( \\left( x+0.05\\right) -\\left( x-0.05\\right) \\right) =0.01 \\end{aligned}
+
+If X is less than 0.05 or greater than 0.95, we will use observations in the range [0, X + 0.05] and [X - 0.05, 1] respectively. Hence, the fraction of the available observations we will use is (X + 0.05) and (1.05 - X) respectively. In other words, if we call f(X) is the fraction of the available observations, we can represent f(X) as below:
+
+$$f\left( X\right) =\begin{cases} X+0.05\hspace{30pt}X\in \left[ 0,0.05\right] \\ 0.1\hspace{55pt} X\in \left[ 0.05,0.95\right] \\ 1.05-X\hspace{30pt} X\in \left[ 0.95,1\right] \end{cases}$$
+
+Also, we know that X is uniformly distributed, therefore $$f\left( \overline{X}\right) =\begin{cases} \overline{X}+0.05=0.025+0.05=0.075\hspace{30pt}X\in \left[ 0,0.05\right] \\ 0.1\hspace{159pt} X\in \left[ 0.05,0.95\right] \\ 1.05-\overline{X} = 0.075\hspace{95pt} X\in \left[ 0.95,1\right] \end{cases}$$
+
+Finally, on average, the fraction of the available observations we use to make the prediction will be
+
+$$
+\overline{f}(X) = 0.05 \times 0.075 + 0.9 \times 0.1 + 0.05 \times 0.075 = 0.0975 = 9.75\%   
+$$
+
+## b
+
+With p = 2 features, our hypercube is now a square and the fraction of the available observations will be calculated as the area of the square
+
+$$
+\overline{f}(X) = 0.0975 \times 0.0975 = 0.0975^2
+$$
+
+## c
+
+$$
+\overline{f}(X) = 0.0975^{100} 
+$$
+
+## d
+
+When p approaches a very postive large number, the fraction of the available observations is
+
+$$
+\lim _{n\rightarrow +\infty }\overline{f}\left( x\right) =0.0975^{n}=0
+$$
+
+## e
+
+The length of each side of the hypercube is 0.0975
+
+# Exercise 5
+
+## a
+
+We expect QDA to perform better on the training set and LDA to perform better on the test set.
+
+## b
+
+We expect QDA to perform better both on the training set on the test set.
+
+## c
+
+As n increases, the variance tends to raise as well in general so we can expect the test prediction accuracy of QDA relative to LDA to improve.
+
+## d
+
+False because QDA might overfit the training data and yield poor generalisation.
+
+# Exercise 6
+
+## a
+
+$$
+\ p(X) = \dfrac{e^{\hat{\beta}_{0} + \hat{\beta}_{1}X_{1} + \hat{\beta}_{2}X_{2}}}{ 1 +e^{\hat{\beta}_{0} + \hat{\beta}_{1}X_{1} + \hat{\beta}_{2}X_{2}}} \approx 0.3775
+$$
+
+## b
+
+$$
+\log \left( \dfrac{p(X)}{1 - p(X)} \right) = \hat{\beta}_{0} + \hat{\beta}_{1}X_{1} + \hat{\beta}_{2}X_{2}
+$$
+
+Plug all numbers we have into the above equation, we get
+
+$$X_{1} = 50hours$$
+
+# Exercise 7
+
+We have
+
+$$
+\hat{p} \left( Y=k| X=x\right) = \dfrac{\pi _{k}f_{k}\left( x\right)}{\sum^{k}_{l=1}\pi _{l}f_{l}\left( x\right) }
+$$
+
+And we need to calculate
+
+$$
+\hat{p} \left( Y=1| X=4\right) = \dfrac{\pi _{1}f_{1}\left( x\right)}{\pi _{0}f_{0}\left( x\right) + \pi _{1}f_{1}\left( x\right)} \hspace{30pt}(1) 
+$$
+
+In which
+
+$$
+f_{0}=\dfrac{1}{\sqrt{2\pi }\sigma _{0}}e^{-\left( x-\mu _{0}\right) ^{2}/2\sigma _{0}^{2}}
+$$
+
+$$
+f_{0}=\dfrac{1}{\sqrt{2\pi }\times 6}e^{-\left( 4-0\right) ^{2}/2\times 6^{2}}=\dfrac{1}{6\sqrt{2\pi }}e^{2/9}
+$$
+
+Similarly,
+
+$$
+f_{1}=\dfrac{1}{6\sqrt{2\pi }}e^{-1/2}
+$$
+
+Also,
+
+$$
+\pi_{0} = 0.2 \hspace{3pt} and \hspace{3pt} \pi_{1} = 0.8 
+$$
+
+Plug all components we have into (1)
+
+$$
+\hat{p} \left( Y=1| X=4\right) = \dfrac{4e^{-1/2}}{1e^{-2/9}+4e^{-1/2}} \approx  0.7519
+$$
+
+# Exercise 8
+
+When K = 1, the KNN model takes just the observation itself as the closet neighbour observation so the error rate on the training set will definitely be 0%. This means the test error rate from KNN model is 36% which is higher than the test error rate from the logistic regression. In this case, in order to classify new observations, we should prefer the logistic regression.
+
+# Exercise 9
+
+## a
+
+$$
+probability(default) = \dfrac{odds}{1 + odds} \approx 0.27
+$$
+
+## b
+
+$$
+odds = \dfrac{prob}{1-prob} \approx 0.19
+$$
+
+# Exercise 10
+
+$$
+log \left( \dfrac{P(Y = k|X = x)}{P(Y = K|X = x)} \right) = \log \left( \dfrac{\pi k}{\pi _{K}}\right) -\dfrac{1}{2}\left( \mu _{k}+\mu _{K}\right) ^{T}\Sigma ^{-1}\left( \mu _{k}-\mu _{K}\right) +x^{T}\Sigma ^{-1}\left( \mu _{k}-\mu _{K}\right)
+$$
+
+Since p = 1,
+
+$$
+\Sigma ^{-1}=\sigma ^{2^{-1}} \hspace{5pt} and  \hspace{5pt} x^{T}=x
+$$
+
+And therefore we can re-write the first equation as
+
+$$
+\log \left( \dfrac{\pi _{k}}{\pi _K}\right) -\dfrac{1}{2\sigma ^{2}}\left( \mu _{k}^{2}-\mu _{K}^{2}\right) +\dfrac{1}{\sigma ^{2}}\left( \mu _{k}-\mu _{K}\right) x
+$$
+
+In which
+
+$$
+a _k = \log \left( \dfrac{\pi _{k}}{\pi _K}\right) -\dfrac{1}{2\sigma ^{2}}\left( \mu _{k}^{2}-\mu _{K}^{2}\right) \hspace{5pt} and \hspace{5pt} b_{kj} = \dfrac{1}{\sigma ^{2}}\left( \mu _{k}-\mu _{K}\right) x
+$$
+
+# Exercise 11
+
+$$
+log \left( \dfrac{P(Y = k|X = x)}{P(Y = K|X = x)} \right) = 
+\log \left( \dfrac{\pi k}{\pi _{K}}\right) 
+-\dfrac{1}{2}\left( x - \mu _{k}\right) ^{T}\Sigma_k ^{-1}\left( x - \mu _{k}\right) 
++ \dfrac{1}{2}\left( x - \mu _{K}\right) ^{T}\Sigma_K ^{-1}\left( x - \mu _{K}\right)
+$$
+
+$$
+= 
+\log \left( \dfrac{\pi k}{\pi _{K}}\right)
+-\dfrac{1}{2} \left(x^{T} \Sigma_k^{-1}-\mu_k^{T} \Sigma_k^{-1}\right)\left(x-\mu_k\right)
++\dfrac{1}{2} 
+\left(x^{T} \Sigma_K^{-1}-\mu_K^{T} \Sigma_K^{-1}\right)\left(x-\mu_K\right)
+$$
+
+$$
+= \log \left( \dfrac{\pi k}{\pi _{K}}\right) 
+- \dfrac{1}{2} \left( x^{T} \Sigma_k^{-1} - x^{T} \Sigma_k^{-1} \mu_k-\mu_k^{T} \Sigma_k^{-1} x+\mu_k^{T} \Sigma_k^{-1} \mu_k \right)
++ \dfrac{1}{2} \left( 
+x^{T} \Sigma_K^{-1} x-x^{T} \Sigma_K^{-1} \mu_K-\mu_K^{T} \Sigma_K^{-1} x+\mu_K^{T} \Sigma_K^{-1} \mu_K \right)
+$$
+
+$$
+= 
+\frac{1}{2}\left(\Sigma_K^{-1}-\Sigma_k^{-1}\right) x^2 
++\left(\Sigma_k^{-1} \mu_k-\Sigma_K^{-1} \mu_K\right) x
++ \frac{1}{2}\left(\Sigma_K^{-1} \mu_K^2-\Sigma_k^{-1} \mu_k^2\right)
++\log \left(\frac{\pi_k}{\pi_K}\right)
+$$
+
+$$
+= a_k + \sum _{j=1}^{p} b_{kj} x_j + \sum _{j=1}^{p} \sum _{l=1}^{p} c_{kjl} x_j x_l
+$$
+
+With
+
+$$
+a_k =  \frac{1}{2}\left(\Sigma_K^{-1} \mu_K^2-\Sigma_k^{-1} \mu_k^2\right)
++\log \left(\frac{\pi_k}{\pi_K}\right)
+$$
+
+$$
+b_{kj} = \Sigma_k^{-1} \mu_k-\Sigma_K^{-1} \mu_K
+$$
+
+and
+
+$$
+c_{kjl} = \frac{1}{2}\left(\Sigma_K^{-1}-\Sigma_k^{-1}\right)
+$$
+
+# Exercise 12
+
+## a
+
+$$
+\hat{\beta}_{0} + \hat{\beta}_{1}x$$
+
+## b
+
+Recall that we have
+
+$$
+odds = \dfrac{prob}{1-prob}
+$$
+
+Doing a bit of manipulation, the odds of orange versus apple in your friend's model is
+
+$$
+\dfrac{exp(\hat{\alpha}_{orange0} + \hat{\alpha}_{orange1}x)}{exp(\hat{\alpha}_{apple0} + \hat{\alpha}_{apple1}x)}
+$$
+
+And the log odds of orange versus apple in your friend's model is
+
+$$
+\hat{\alpha}_{orange0} + \hat{\alpha}_{orange1}x - \hat{\alpha}_{apple0} - \hat{\alpha}_{apple1}x = (\hat{\alpha}_{orange0}  - \hat{\alpha}_{apple0}) - ( \hat{\alpha}_{orange1} + \hat{\alpha}_{apple1})x
+$$
+
+## c
+
+$$
+\hat{\alpha}_{orange0}  - \hat{\alpha}_{apple0} = \hat{\beta}_{0} = 2
+$$
+
+$$
+\hat{\alpha}_{orange1}  - \hat{\alpha}_{apple0} = \hat{\beta}_{1} = -1
+$$
+
+## d
+
+$$
+\hat{\beta}_{0} =\hat{\alpha}_{orange0}  - \hat{\alpha}_{apple0} =  -1.8
+$$
+
+$$
+\hat{\beta}_{1} =\hat{\alpha}_{orange1}  - \hat{\alpha}_{apple0} = -2.6
+$$
+
+## e
+
+Because the log odds of your model is the same as your friend's model, so
+
+$$
+\log\left( \dfrac{P_{you}(orange)}{P_{you}(apple)} \right) = \log\left( \dfrac{P_{friend}(orange)}{P_{friend}(apple)} \right)
+$$
+
+$$
+\dfrac{P_{you}(orange)}{P_{you}(apple)} = \dfrac{P_{friend}(orange)}{P_{friend}(apple)}
+$$
+
+$$
+\dfrac{P_{you}(orange)}{P_{you}(apple) + P_{you}(orange)} = \dfrac{P_{friend}(orange)}{P_{friend}(apple) + P_{friend}(orange)}
+$$
+
+The denominator is 1, hence
+
+$$
+P_{you}(orange) = P_{friend}(orange)
+$$
+
+In other words, the fraction of the time you expect the predicted class labels from your model to agree with those from your friend's model is 2000/2000 (100%)
+
+# Exercise 13
+
+```{r}
+library(ISLR2)
+head(Weekly)
+```
+
+## a
+
+```{r}
+library(psych)
+pairs.panels(Weekly)
+```
+
+```{r}
+table(Weekly$Direction)/dim(Weekly)[1]
+```
+
+## b
+
+Only predictor Lag2 appears to be statistically significant.
+
+```{r}
+lgr_model = glm(Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume,
+                data = Weekly, family = binomial)
+summary(lgr_model)
+```
+
+## c
+
+The accuracy is approximately 47%.
+
+```{r}
+lgr_probs = predict(lgr_model)
+lgr_preds = rep('Up', dim(Weekly)[1])
+lgr_preds[lgr_probs <= 0.5] = 'Down'
+
+mean(lgr_preds == Weekly$Direction)
+table(lgr_preds, Weekly$Direction)
+```
+
+## d
+
+```{r}
+train_mask = Weekly$Year < 2009
+train_set = Weekly[train_mask, ]
+test_set = Weekly[!train_mask, ]
+
+length(train_set)
+```
+
+```{r}
+lgr_model = glm(Direction ~ Lag2, data = train_set, family = binomial)
+
+lgr_probs = predict(lgr_model, newdata = test_set)
+lgr_preds = rep('Up', dim(test_set)[1])
+lgr_preds[lgr_probs <= 0.5] = 'Down'
+
+mean(lgr_preds == test_set$Direction)
+table(lgr_preds, test_set$Direction)
+```
+
+## e
+
+```{r}
+library(MASS)
+lda_model = lda(Direction ~ Lag2, data = train_set)
+
+lda_preds = predict(lda_model, newdata = test_set)$class
+
+mean(lda_preds == test_set$Direction)
+table(lda_preds, test_set$Direction)
+```
+
+## f
+
+```{r}
+qda_model = qda(Direction ~ Lag2, data = train_set)
+
+qda_preds = predict(qda_model, newdata = test_set)$class
+
+mean(qda_preds == test_set$Direction)
+table(qda_preds, test_set$Direction)
+```
+
+## g
+
+```{r}
+library(class)
+knn_pred = knn(as.matrix(train_set$Lag2), as.matrix(test_set$Lag2), 
+               train_set$Direction, k = 1)
+
+mean(knn_pred == test_set$Direction)
+table(knn_pred, test_set$Direction)
+```
+
+## h
+
+```{r}
+library(e1071)
+nb_model = naiveBayes(Direction ~ Lag2, train_set)
+nb_preds = predict(nb_model, newdata = test_set)
+
+mean(nb_preds == test_set$Direction)
+table(nb_preds, test_set$Direction)
+```
+
+## i
+
+Using one predictor Lag2, QDA and Naive Bayes models appear to provide the best results on the given data.
+
+```{r}
+Weekly[, 2:6]
+```
+
+## j
+
+### QDA
+
+```{r}
+qda_model = qda(Direction ~ Lag4 + Lag5, data = train_set)
+
+qda_preds = predict(qda_model, newdata = test_set)$class
+
+mean(qda_preds == test_set$Direction)
+table(qda_preds, test_set$Direction)
+```
+
+### Naive Bayes
+
+```{r}
+nb_model = naiveBayes(Direction ~ Lag3 + Lag4 + Lag5, train_set)
+nb_preds = predict(nb_model, newdata = test_set)
+
+mean(nb_preds == test_set$Direction)
+table(nb_preds, test_set$Direction)
+```
+
+### KNN
+
+```{r}
+knn_pred = knn(as.matrix(train_set$Lag2), as.matrix(test_set$Lag2), 
+               train_set$Direction, k = 5)
+
+mean(knn_pred == test_set$Direction)
+table(knn_pred, test_set$Direction)
+```
+
+# Exercise 14
+
+```{r}
+head(Auto)
+```
+
+## a
+
+```{r}
+mpg01 = rep(0, dim(Auto)[1])
+mpg01[Auto$mpg > median(Auto$mpg)] = 1
+new_auto = data.frame(mpg01, Auto[, 2:9])
+head(new_auto)
+```
+
+## b
+
+cylinders, displacement, horsepower and weight are features that seem most likely to be useful in predicting mpg01.
+
+```{r}
+library(psych)
+pairs.panels(new_auto)
+```
+
+```{r}
+attach(new_auto)
+boxplot(cylinders ~ mpg01)
+```
+
+```{r}
+boxplot(displacement ~ mpg01)
+```
+
+```{r}
+boxplot(horsepower ~ mpg01)
+```
+
+```{r}
+boxplot(weight ~ mpg01)
+```
+
+## c
+
+```{r}
+set.seed(1)
+train_rate = 0.6
+train_indices = sample(dim(Auto)[1], 
+                       round(dim(Auto)[1] * train_rate),
+                       replace = F)
+train_set = new_auto[train_indices, ]
+test_set = new_auto[-train_indices, ]
+```
+
+```{r}
+mean(train_set$mpg01)
+mean(test_set$mpg01)
+```
+
+## d
+
+```{r}
+library(MASS)
+lda_model = lda(mpg01 ~ cylinders + displacement + horsepower + weight,
+                data = train_set)
+test_preds = predict(lda_model, test_set[, 2:9])$class
+table(test_preds, test_set$mpg01)
+1 - mean(test_preds == test_set$mpg01)
+```
+
+## e
+
+```{r}
+qda_model = qda(mpg01 ~ cylinders + displacement + horsepower + weight,
+                data = train_set)
+test_preds = predict(qda_model, test_set[, 2:9])$class
+table(test_preds, test_set$mpg01)
+1 - mean(test_preds == test_set$mpg01)
+```
+
+## f
+
+```{r}
+lgr_model = glm(mpg01 ~ cylinders + displacement + horsepower + weight,
+                data = train_set, family = binomial)
+test_probs = predict(lgr_model, test_set[, 2:9], type = 'response')
+test_preds = test_probs > 0.5
+table(test_preds, test_set$mpg01)
+1 - mean(test_preds == test_set$mpg01)
+```
+
+## g
+
+```{r}
+library(e1071)
+nb_model = naiveBayes(mpg01 ~ cylinders + displacement + horsepower + weight,
+                      data = train_set)
+test_preds = predict(nb_model, test_set[, 2:9])
+table(test_preds, test_set$mpg01)
+1 - mean(test_preds == test_set$mpg01)
+```
+
+## h
+
+In this case, among three values 1, 10 and 100, K = 10 seems to be the best.
+
+```{r}
+library(class)
+knn_preds = knn(train_set[c('cylinders', 'displacement', 'horsepower', 'weight')],
+                test_set[c('cylinders', 'displacement', 'horsepower', 'weight')],
+                train_set$mpg01, k = 1)
+
+table(knn_preds, test_set$mpg01)
+1 - mean(knn_preds == test_set$mpg01)
+```
+
+```{r}
+knn_preds = knn(train_set[c('cylinders', 'displacement', 'horsepower', 'weight')],
+                test_set[c('cylinders', 'displacement', 'horsepower', 'weight')],
+                train_set$mpg01, k = 10)
+
+table(knn_preds, test_set$mpg01)
+1 - mean(knn_preds == test_set$mpg01)
+```
+
+```{r}
+knn_preds = knn(train_set[c('cylinders', 'displacement', 'horsepower', 'weight')],
+                test_set[c('cylinders', 'displacement', 'horsepower', 'weight')],
+                train_set$mpg01, k = 100)
+
+table(knn_preds, test_set$mpg01)
+1 - mean(knn_preds == test_set$mpg01)
+```
+
+# Exercise 15
+
+## a
+
+```{r}
+Power = function(){
+  x = 2
+  a = 3
+  print(x^3)
+}
+Power()
+```
+
+## b
+
+```{r}
+Power2 = function(x, a){
+  print(x^a)
+}
+Power2(3, 8)
+```
+
+## c
+
+```{r}
+Power2(10, 3)
+Power2(8, 17)
+Power2(131, 3)
+```
+
+## d
+
+```{r}
+Power3 = function(x, a){
+  return(x^a)
+}
+```
+
+## e
+
+```{r}
+x = c(1:10)
+y = Power3(x, 2)
+plot(x, y, xlab = 'x', ylab = 'x^2', main = 'f(x) = x^2')
+```
+
+```{r}
+x = c(1:10)
+y = Power3(x, 2)
+plot(x, y, log = 'xy', xlab = 'log(x)', ylab = 'log(x^2)', 
+     main = 'f(x) = x^2 on the log scale')
+```
+
+## f
+
+```{r}
+PlotPower = function(x, a){
+  y = x^a
+  plot(x, y)
+}
+PlotPower(1:10, 3)
+```
+
+# Exercise 16
+
+```{r}
+head(Boston)
+```
+
+## Create the response variable
+
+```{r}
+crim01 = rep(0, dim(Boston)[1])
+crim01[Boston$crim > median(Boston$crim)] = 1
+new_boston = data.frame(crim01, Boston[, 2:14])
+head(new_boston)
+```
+
+## Exploring
+
+```{r}
+library(psych)
+pairs.panels(new_boston)
+```
+
+```{r}
+attach(new_boston)
+par(mfrow = c(2, 3))
+boxplot(indus ~ crim01)
+boxplot(nox ~ crim01)
+boxplot(age ~ crim01)
+boxplot(dis ~ crim01)
+boxplot(rad ~ crim01)
+boxplot(tax ~ crim01)
+```
+
+## Splitting data
+
+```{r}
+set.seed(1)
+train_rate = 0.6
+train_indices = sample(dim(Boston)[1], 
+                       round(dim(Boston)[1] * train_rate),
+                       replace = F)
+train_set = new_boston[train_indices, ]
+test_set = new_boston[-train_indices, ]
+```
+
+```{r}
+mean(train_set$crim01)
+mean(test_set$crim01)
+```
+
+## Logistic regression
+
+```{r}
+lgr_model = glm(crim01 ~ indus + nox + age + dis + rad + tax,
+                data = train_set, family = binomial)
+test_probs = predict(lgr_model, test_set[, 2:14], type = 'response')
+test_preds = test_probs > 0.5
+table(test_preds, test_set$crim01)
+1 - mean(test_preds == test_set$crim01)
+```
+
+```{r}
+lgr_model = glm(crim01 ~ .,
+                data = train_set, family = binomial)
+test_probs = predict(lgr_model, test_set[, 2:14], type = 'response')
+test_preds = test_probs > 0.5
+table(test_preds, test_set$crim01)
+1 - mean(test_preds == test_set$crim01)
+```
+
+## LDA
+
+```{r}
+lda_model = lda(crim01 ~ indus + nox + age + dis + rad + tax,
+                data = train_set)
+test_preds = predict(lda_model, test_set[, 2:14])$class
+table(test_preds, test_set$crim01)
+1 - mean(test_preds == test_set$crim01)
+```
+
+```{r}
+lda_model = lda(crim01 ~ .,
+                data = train_set)
+test_preds = predict(lda_model, test_set[, 2:14])$class
+table(test_preds, test_set$crim01)
+1 - mean(test_preds == test_set$crim01)
+```
+
+## Naive Bayes
+
+```{r}
+nb_model = naiveBayes(crim01 ~ indus + nox + age + dis + rad + tax,
+                      data = train_set)
+test_preds = predict(nb_model, test_set[, 2:14])
+table(test_preds, test_set$crim01)
+1 - mean(test_preds == test_set$crim01)
+```
+
+```{r}
+nb_model = naiveBayes(crim01 ~ .,
+                      data = train_set)
+test_preds = predict(nb_model, test_set[, 2:14])
+table(test_preds, test_set$crim01)
+1 - mean(test_preds == test_set$crim01)
+```
+
+## KNN
+
+```{r}
+knn_preds = knn(train_set[c('indus', 'nox', 'age', 'dis', 'rad', 'tax')],
+                test_set[c('indus', 'nox', 'age', 'dis', 'rad', 'tax')],
+                train_set$crim01, k = 1)
+
+table(knn_preds, test_set$crim01)
+1 - mean(knn_preds == test_set$crim01)
+```
+
+```{r}
+knn_preds = knn(train_set[c('indus', 'nox', 'age', 'dis', 'rad', 'tax')],
+                test_set[c('indus', 'nox', 'age', 'dis', 'rad', 'tax')],
+                train_set$crim01, k = 3)
+
+table(knn_preds, test_set$crim01)
+1 - mean(knn_preds == test_set$crim01)
+```
+
+```{r}
+knn_preds = knn(train_set, test_set,
+                train_set$crim01, k = 3)
+
+table(knn_preds, test_set$crim01)
+1 - mean(knn_preds == test_set$crim01)
+```
