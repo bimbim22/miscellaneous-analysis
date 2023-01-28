@@ -1,0 +1,488 @@
+---
+title: "Chapter 5 Resampling Methods"
+output:
+  pdf_document: default
+---
+
+# Exercise 1
+
+$$
+Var(\alpha X + (1 - \alpha)Y) = Var(\alpha X) + Var((1 - \alpha)Y) + 2Cov (\alpha X, (1 - \alpha)Y)
+$$
+
+$$
+= \alpha^2 \sigma_X ^2 + (1 - \alpha)^2 \sigma_Y ^2 + 2 \alpha \sigma_{XY} - 2 \alpha^2 \sigma_{XY}  
+$$
+
+$$
+= (\sigma_X^2 + \sigma_Y^2 - 2\sigma_{XY})\alpha^2 - (2\sigma_Y^2 - 2\sigma_{XY})\alpha + \sigma_Y^2
+$$
+
+Take derivative with respect to $$ \alpha $$ and set it to zero, we get
+
+$$
+2(\sigma_X^2 + \sigma_Y^2 - 2\sigma_{XY})\alpha - (2\sigma_Y^2 - 2\sigma_{XY}) = 0
+$$
+
+$$
+\Leftrightarrow \alpha = \dfrac{2\sigma_Y^2 - 2\sigma_{XY}}{2(\sigma_X^2 + \sigma_Y^2 - 2\sigma_{XY})} = \dfrac{\sigma_Y^2 - \sigma_{XY}}{\sigma_X^2 + \sigma_Y^2 - 2\sigma_{XY}}
+$$
+
+# Exercise 2
+
+## a
+
+The probability that the first bootstrap observation is the *j*th observation from the original sample is $$ 1/n $$
+
+Therefore the probability that the first bootstrap observation is not the jth observation from the original sample is $$ 1 - 1/n $$
+
+## b
+
+$$ 1 - 1/n $$
+
+## c
+
+The probability that the *j*th observation is not in the bootstrap sample is the product of the probabilities that the first, the second, and so on to the last bootstrap observation is not the *j*th observation from the original sample. Mathematically writing, it is
+
+$$ (1 - 1/n)(1 - 1/n)...(1 - 1/n) = (1 - 1/n)^n$$
+
+## d
+
+When n = 5, the probability that the *j*th observation is in the bootstrap sample is $$ 1 - (1 - 1/5)^5 = 0.6723 $$
+
+## e
+
+0.6340
+
+## f
+
+0.6321
+
+## g
+
+The probability that the *j*th observation is in the bootstrap sample approaches a specific number when n is approaches infinity. The specific number here is approximatly 0.6321.
+
+```{r}
+n = 1:1e+5
+p = 1 - (1 - 1/n)^n
+plot(n, p)
+```
+
+## h
+
+The mean of the probability that the fourth observation is in the bootstrap sample is very close to the specific number 0.6321 mentioned in (f) and (g)
+
+```{r}
+store = rep(NA , 10000)
+for (i in 1:10000) {
+  store[i] = sum(sample(1:100 , rep = TRUE) == 4) > 0
+}
+mean(store)
+```
+
+# Exercise 3
+
+## a
+
+The data set is divided into k parts. In the first iteration, the first part is used as a validation set and the remaining (k - 1) parts are used as a training set. In the second iteration, the second part is used as a validation set and the remaining (k - 1) parts are used as a training set. This process is iteratively implemented for k times.
+
+## b
+
+### i
+
+K-fold validation can be understood as implementing the validation set approach multiple times. If we divide the data into k parts, each part will be treated as a validation set k times which results in k test errors. This tackles the high variance disadvantage of the validation set approach and also avoids overestimating the test MSE.
+
+On the other hand, k-fold validation set is more computationally expensive and more time-consuming.
+
+## ii
+
+We can consider LOOCV as k-fold cross validation when k = n. Therefore, as n is large, LOOCV takes more time than k-fold cross validation. In other words, k-fold CV has a computational advantage to LOOCV when k \< n.
+
+There is a bias-variance trade-off associated with the choice of k in k-fold cross-validation. Typically, given these considerations, one performs k-fold cross-validation using k = 5 or k = 10, as these values have been shown empirically to yield test error rate estimates that suffer neither from excessively high bias nor from very high variance.
+
+# Exercise 4
+
+We would want to use bootstrap method to estimate the standard deviation. We randomly select n observations from the data set in order to produce a bootstrap data set, the sampling is performed with replacement.
+
+This procedure is repeated B times for some large value of B, in order to produce B different bootstrap data sets B. We can compute the standard error of these bootstrap estimates using the formula (5.8).
+
+# Exercise 5
+
+```{r}
+library(ISLR2)
+head(Default)
+```
+
+## a
+
+```{r}
+set.seed(1)
+lgr_model = glm(default ~ income + balance, data = Default, family = binomial)
+summary(lgr_model)
+```
+
+## b
+
+### i
+
+```{r}
+set.seed(1)
+n = dim(Default)[1]
+train = sample(n, n/2, replace = F)
+train_set = Default[train, ]
+val_set = Default[-train, ]
+```
+
+### ii
+
+```{r}
+set.seed(1)
+lgr_model = glm(default ~ income + balance, data = train_set, family = binomial)
+summary(lgr_model)
+```
+
+### iii
+
+```{r}
+val_probs = predict(lgr_model, newdata = val_set, type = 'response')
+val_preds = rep('No', n/2)
+val_preds[val_probs > 0.5] = 'Yes'
+```
+
+### iv
+
+```{r}
+1 - mean(val_preds == val_set$default)
+```
+
+## c
+
+The results are different but the difference is not great.
+
+```{r}
+train = sample(n, n/2, replace = F)
+train_set = Default[train, ]
+val_set = Default[-train, ]
+
+lgr_model = glm(default ~ income + balance, data = train_set, family = binomial)
+
+val_probs = predict(lgr_model, newdata = val_set, type = 'response')
+val_preds = rep('No', n/2)
+val_preds[val_probs > 0.5] = 'Yes'
+
+1 - mean(val_preds == val_set$default)
+```
+
+```{r}
+train = sample(n, n/2, replace = F)
+train_set = Default[train, ]
+val_set = Default[-train, ]
+
+lgr_model = glm(default ~ income + balance, data = train_set, family = binomial)
+
+val_probs = predict(lgr_model, newdata = val_set, type = 'response')
+val_preds = rep('No', n/2)
+val_preds[val_probs > 0.5] = 'Yes'
+
+1 - mean(val_preds == val_set$default)
+```
+
+```{r}
+train = sample(n, n/2, replace = F)
+train_set = Default[train, ]
+val_set = Default[-train, ]
+
+lgr_model = glm(default ~ income + balance, data = train_set, family = binomial)
+
+val_probs = predict(lgr_model, newdata = val_set, type = 'response')
+val_preds = rep('No', n/2)
+val_preds[val_probs > 0.5] = 'Yes'
+
+1 - mean(val_preds == val_set$default)
+```
+
+## d
+
+It seems to be that including the dummy variable "student" does not lead to a reduction in the test error.
+
+```{r}
+train = sample(n, n/2, replace = F)
+train_set = Default[train, ]
+val_set = Default[-train, ]
+
+lgr_model = glm(default ~ income + balance + student, 
+                data = train_set, family = binomial)
+
+val_probs = predict(lgr_model, newdata = val_set, type = 'response')
+val_preds = rep('No', n/2)
+val_preds[val_probs > 0.5] = 'Yes'
+
+1 - mean(val_preds == val_set$default)
+```
+
+# Exercise 6
+
+## a
+
+```{r}
+set.seed(1)
+lgr_model = glm(default ~ income + balance, data = Default, family = binomial)
+summary(lgr_model)
+```
+
+## b
+
+```{r}
+boot.fn = function(data, index){
+  model = glm(default ~ income + balance, data = Default, 
+              subset = index, family = binomial)
+  coef(model)
+}
+
+boot.fn(Default, 1:n)
+```
+
+## c
+
+```{r}
+indices = sample(n, n, replace = T)
+boot.fn(Default, indices)
+```
+
+```{r}
+library(boot)
+boot(Default, boot.fn, R = 1000)
+```
+
+## d
+
+The estimated standard errors obtained using the glm() function are very close to the estimated standard errors obtained using bootstrap function
+
+# Exercise 7
+
+```{r}
+head(Weekly)
+```
+
+```{r}
+n = dim(Weekly)[1]
+```
+
+## a
+
+```{r}
+lgr_model = glm(Direction ~ Lag1 + Lag2, data = Weekly, family = binomial)
+```
+
+## b
+
+```{r}
+lgr_model = glm(Direction ~ Lag1 + Lag2, data = Weekly, 
+                subset = 2:n, family = binomial)
+```
+
+## c
+
+The estimated probability is greater than 0.5 which implies a "Down" as prediction for the first observation. This is a correct classification.
+
+```{r}
+predict(lgr_model, newdata = Weekly[1, ], type = 'response')
+```
+
+## d
+
+```{r}
+probs = rep(NA, n)
+preds = rep('Down', n)
+
+for (i in 1:n){
+  model = glm(Direction ~ Lag1 + Lag2, data = Weekly[-i, ], family = binomial)
+  probs[i] = predict(model, newdata = Weekly[i, ], type = 'response')
+}
+```
+
+```{r}
+preds[probs > 0.5] = 'Up'
+```
+
+## e
+
+The LOOCV estimate for the test error is about 45%
+
+```{r}
+1 - mean(preds == Weekly$Direction)
+```
+
+# Exercise 8
+
+## a
+
+n = 100 and p = 1. The model equation is $$ y = x - 2x^2 + \epsilon $$
+
+```{r}
+set.seed(1)
+x = rnorm(100)
+y = x - 2 * x^2 + rnorm(100)
+```
+
+## b
+
+The relationship between x and y is obviously non-linear. The error term is not large.
+
+```{r}
+plot(x, y)
+```
+
+## c
+
+```{r}
+set.seed(1)
+simulated_data = data.frame(x, y)
+loocv = rep(NA, 4)
+
+for (i in 1:4){
+  model = glm(y ~ poly(x, i), data = simulated_data)
+  loocv[i] = cv.glm(simulated_data, model)$delta[1]
+}
+loocv
+```
+
+## d
+
+The results from (c) and (d) are identical.
+
+```{r}
+set.seed(10)
+
+for (i in 1:4){
+  model = glm(y ~ poly(x, i), data = simulated_data)
+  loocv[i] = cv.glm(simulated_data, model)$delta[1]
+}
+
+loocv
+```
+
+## e
+
+The second model obtained the smallest error simply since it almost captured the true relationship between x and y.
+
+## f
+
+The summary from the second model says that predictors x and x\^2 are statistically significant. Hence, the below results agree with the conclusions drawn based on the cross-validation results.
+
+```{r}
+summary(glm(y ~ poly(x, 1), data = simulated_data))
+```
+
+```{r}
+summary(glm(y ~ poly(x, 2), data = simulated_data))
+```
+
+```{r}
+summary(glm(y ~ poly(x, 3), data = simulated_data))
+```
+
+```{r}
+summary(glm(y ~ poly(x, 4), data = simulated_data))
+```
+
+# Exercise 9
+
+```{r}
+head(Boston)
+```
+
+## a
+
+```{r}
+mean(Boston$medv)
+```
+
+## b
+
+```{r}
+std = function(data){
+  n = length(data)
+  mu_hat = mean(data)
+  var = sum((mu_hat - data)^2)
+  sqrt(var) / (n - 1)
+}
+
+std(Boston$medv)
+```
+
+```{r}
+sd(Boston$medv) / sqrt(n - 1)
+```
+
+## c
+
+The standard errors of $$ \hat{\mu} $$  from (b) and (c) are nearly the same.
+
+```{r}
+boot_fn = function(data, indices){
+  indices = sample(n, n, replace =T)
+  mean(data[indices])
+}
+
+boot_fn(Boston$medv, n)
+```
+
+```{r}
+set.seed(1)
+boot_mu = boot(Boston$medv, boot_fn, 1000)
+boot_mu
+```
+
+## d
+
+The 95% confidence intervals for the mean using bootstrap and t-test are very close to each other.
+
+```{r}
+22.61917 - 2 * 0.407274
+22.61917 + 2 * 0.407274
+```
+
+```{r}
+t.test(Boston$medv)
+```
+
+## e
+
+```{r}
+median(Boston$medv)
+```
+
+## f
+
+The estimated median from bootstrap is really close to the median from (e). Also, the standard error for the estimated median is small (compared to the estimated median value).
+
+```{r}
+boot_fn = function(data, indices){
+  median(data[indices])
+}
+
+boot(Boston$medv, boot_fn, R = 1000)
+```
+
+## g
+
+```{r}
+quantile(Boston$medv)
+```
+
+```{r}
+quantile(Boston$medv, 0.1)
+```
+
+## h
+
+As you might expected, there is no significant difference between results from (g) and (h). And, the standard error for the estimated tenth percentile is small (compared to the estimated tenth percentile value it self).
+
+```{r}
+boot_fn = function(data, indices){
+  quantile(data[indices], 0.1)
+}
+
+boot(Boston$medv, boot_fn, R = 1000)
+```
